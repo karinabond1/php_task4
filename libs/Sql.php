@@ -106,6 +106,11 @@ class Sql
         return $this->table;
     }
 
+    protected function setQuerySelect($str)
+    {
+        $this->querySelect = $str;
+    }
+
     protected function getQuerySelect()
     {
         return $this->querySelect;
@@ -126,30 +131,33 @@ class Sql
         return $this->queryDelete;
     }
 
-    function select()
+    public function select()
     {
         $str = "";
-        foreach ($this->fields as $key => $value) {
-            $next = array_key_exists($key + 1, $this->fields);
-            /*if(next($this->fields)){
-                $str += $value.", ";
-                echo $str;
-            } else {
-                $str += $value;
-                echo $str;
-            }*/
-            //echo $next;
-            if ($next) {
-                $str .= $value . ", ";
-            } else {
-                $str .= $value;
-                //echo $str;
-            }
-
-        }
+//        foreach ($this->fields as $key => $value) {
+//            $next = array_key_exists($key + 1, $this->fields);
+//            /*if(next($this->fields)){
+//                $str += $value.", ";
+//                echo $str;
+//            } else {
+//                $str += $value;
+//                echo $str;
+//            }*/
+//            //echo $next;
+//            if ($next) {
+//                $str .= $value . ", ";
+//            } else {
+//                $str .= $value;
+//                //echo $str;
+//            }
+//
+//        }
+        //print_r($this->fields);
+        $str = implode("`, `",$this->fields);
         //echo $str;
-        $this->querySelect = "SELECT " . $str . " FROM " . $this->table . " WHERE " . $this->whereField . " = " . $this->whereVal . ";";
-        return $this->querySelect;
+        $this->querySelect = "SELECT `" . $str . "` FROM `" . $this->table . "` WHERE " . $this->whereField . "='" . $this->whereVal . "'";
+        //echo $this->querySelect."+";
+        //return $this->querySelect;
     }
 
     function insert()

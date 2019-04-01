@@ -1,26 +1,32 @@
 <?php
+include_once 'Sql.php';
+include_once 'E:/PHP/OSPanel/domains/GFL/php_task1/php_task4/config.php';
 
 class MySql extends Sql
 {
     protected $connection;
-    function __construct()
+    protected $obj;
+
+    function __construct(Sql $obj)
     {
+        parent::__construct();
+
         $this->connection = "";
+        $this->obj=$obj;
     }
 
-    function connect()
+    public function connect()
     {
-        $this->connection = mysql_pconnect(HOST, USER_NAME, USER_PASS);
-        if (!$this->connection) {
-            return "Can not connect to MySQL";
-        }
+        $this->connection = mysql_connect(HOST, USER_NAME, USER_PASS);
+        if (!$this->connection) die ("Can not connect to MySQL");
         mysql_select_db(DATABASE);
     }
 
-    function select()
+    public function selectMySql()
     {
         parent::select();
-        $q = mysql_query($this->getQuerySelect());
+        echo "value : ".$this->obj->getQuerySelect();
+        $q = mysql_query($this->obj->getQuerySelect());
         $result = array();
         $index = 0;
         while ($row = mysql_fetch_assoc($q)) {
