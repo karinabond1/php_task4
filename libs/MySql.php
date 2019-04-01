@@ -7,12 +7,12 @@ class MySql extends Sql
     protected $connection;
     protected $obj;
 
-    function __construct(Sql $obj)
+    function __construct()
     {
         parent::__construct();
 
         $this->connection = "";
-        $this->obj=$obj;
+        //$this->obj=$obj;
     }
 
     public function connect()
@@ -22,10 +22,14 @@ class MySql extends Sql
         mysql_select_db(DATABASE);
     }
 
+    public function setObj(Sql $obj){
+        $this->obj=$obj;
+    }
+
     public function selectMySql()
     {
         parent::select();
-        echo "value : ".$this->obj->getQuerySelect();
+        //echo "value : ".$this->obj->getQuerySelect();
         $q = mysql_query($this->obj->getQuerySelect());
         $result = array();
         $index = 0;
@@ -39,8 +43,9 @@ class MySql extends Sql
     function update()
     {
         parent::update();
-        $query = $this->getQueryUpdate();
-        $result = mysql_query($query);
+        //echo "value : ".$this->obj->getQueryUpdate();
+        //$query = $this->obj->getQueryUpdate();
+        $result = mysql_query($this->obj->getQueryUpdate());
         if ($result) {
             return "The field is updated";
         } else {
@@ -51,7 +56,8 @@ class MySql extends Sql
     function insert()
     {
         parent::insert();
-        $query = $this->getQueryInsert();
+        //echo "value : ".$this->obj->getQueryInsert();
+        $query =$this->obj->getQueryInsert();
         $result = mysql_query($query);
         if ($result) {
             return "The field is added";
@@ -63,8 +69,9 @@ class MySql extends Sql
     function delete()
     {
         parent::delete();
-        $query = $this->getQueryDelete();
-        $result = mysql_query($query);
+        echo "value : ".$this->obj->getQueryDelete();
+       // $query = $this->getQueryDelete();
+        $result = mysql_query($this->obj->getQueryDelete());
         if ($result) {
             return "The field is deleted";
         } else {

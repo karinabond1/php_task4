@@ -3,6 +3,7 @@ include_once 'Sql.php';
 class PgSql extends Sql
 {
     protected $connection;
+    protected $obj;
 
     function __construct()
     {
@@ -12,16 +13,20 @@ class PgSql extends Sql
     function connect()
     {
         $this->connection = "host=" . HOST . " dbname=" . DATABASE . " user=" . USER_NAME . " password=" . USER_PASS;
-        $connect = pg_connect($this->connection);
+        $connect = pg_connect($this->obj->connection);
         if (!$connect) {
             return "Can not connect to MySQL";
         }
     }
 
+    public function setObj(Sql $obj){
+        $this->obj=$obj;
+    }
+
     function select()
     {
         parent::select();
-        $q = pg_query($this->getQuerySelect());
+        $q = pg_query($this->obj->getQuerySelect());
         $result = array();
         $index = 0;
         while ($row = mysql_fetch_assoc($q)) {
@@ -34,7 +39,7 @@ class PgSql extends Sql
     function update()
     {
         parent::update();
-        $query = $this->getQueryUpdate();
+        $query = $this->obj->getQueryUpdate();
         $result = pg_query($query);
         if ($result) {
             return "The field is updated";
@@ -46,7 +51,7 @@ class PgSql extends Sql
     function insert()
     {
         parent::insert();
-        $query = $this->getQueryInsert();
+        $query = $this->obj->getQueryInsert();
         $result = pg_query($query);
         if ($result) {
             return "The field is added";
@@ -58,7 +63,7 @@ class PgSql extends Sql
     function delete()
     {
         parent::delete();
-        $query = $this->getQueryDelete();
+        $query = $this->obj->getQueryDelete();
         $result = pg_query($query);
         if ($result) {
             return "The field is deleted";
@@ -69,7 +74,7 @@ class PgSql extends Sql
 
     function __destruct()
     {
-        pg_close($this->connection);
+        pg_close($this->obj->connection);
     }
 }
 

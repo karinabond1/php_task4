@@ -164,15 +164,16 @@ class Sql
     {
         $str_fields = "";
         $str_name = "";
-        foreach ($this->fields as $key => $value) {
+        /*foreach ($this->fields as $key => $value) {
             $next = array_key_exists($key + 1, $this->fields);
             if ($next) {
                 $str_fields .= $value . ", ";
             } else {
                 $str_fields .= $value;
             }
-        }
-        foreach ($this->values as $key => $value) {
+        }*/
+        $str_fields = implode("`, `",$this->fields);
+        /*foreach ($this->values as $key => $value) {
             $next = array_key_exists($key + 1, $this->values);
             if ($next) {
                 $str_name .= $value . ", ";
@@ -180,8 +181,9 @@ class Sql
                 $str_name .= $value;
             }
 
-        }
-        $this->queryInsert = "INSERT INTO " . $this->table . " ( " . $str_fields . ") " . "VALUES (" . $str_name . " );";
+        }*/
+        $str_name = implode("', '",$this->values);
+        $this->queryInsert = "INSERT"." INTO `" . $this->table . "`( `" . $str_fields . "`) " . "VALUES ('". $str_name . "')";
         return $this->queryInsert;
     }
 
@@ -189,7 +191,7 @@ class Sql
     {
         $str_fields = "";
         $str_name = "";
-        foreach ($this->fields as $key => $value) {
+        /*foreach ($this->fields as $key => $value) {
             $next = array_key_exists($key + 1, $this->fields);
             if ($next) {
                 $str_fields .= $value . ", ";
@@ -205,14 +207,16 @@ class Sql
                 $str_name .= $value;
             }
 
-        }
-        $this->queryUpdate = "UPDATE " . $this->table . " SET " . $str_fields . " = " . $str_name . " WHERE " . $this->whereField . " = " . $this->whereVal . ";";
+        }*/
+        $str_fields = implode("`, `",$this->fields);
+        $str_name = implode("', '",$this->values);
+        $this->queryUpdate = "UPDATE `" . $this->table . "` SET `" . $str_fields . "` = '" . $str_name . "' WHERE " . $this->whereField . "='" . $this->whereVal . "'";
         return $this->queryUpdate;
     }
 
     function delete()
     {
-        $this->queryDelete = "DELETE FROM " . $this->table . " WHERE " . $this->whereField . " = " . $this->getWhereVal() . ";";
+        $this->queryDelete = "DELETE"." FROM `" . $this->table . "` WHERE " . $this->whereField . "='" . $this->getWhereVal() . "'";
         return $this->queryDelete;
     }
 
