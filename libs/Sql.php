@@ -7,10 +7,14 @@ class Sql
     protected $values;
     protected $whereField;
     protected $whereVal;
-    protected $querySelect;
-    protected $queryInsert;
-    protected $queryUpdate;
-    protected $queryDelete;
+    protected $querySelectMySql;
+    protected $queryInsertMySql;
+    protected $queryUpdateMySql;
+    protected $queryDeleteMySql;
+    protected $querySelectPqSql;
+    protected $queryInsertPqSql;
+    protected $queryUpdatePqSql;
+    protected $queryDeletePqSql;
 
     function __construct()
     {
@@ -106,118 +110,90 @@ class Sql
         return $this->table;
     }
 
-    protected function setQuerySelect($str)
+    
+
+    protected function getQuerySelectMySql()
     {
-        $this->querySelect = $str;
+        return $this->querySelectMySql;
     }
 
-    protected function getQuerySelect()
+    protected function getQueryInsertMySql()
     {
-        return $this->querySelect;
+        return $this->queryInsertMySql;
     }
 
-    protected function getQueryInsert()
+    protected function getQueryUpdateMySql()
     {
-        return $this->queryInsert;
+        return $this->queryUpdateMySql;
     }
 
-    protected function getQueryUpdate()
+    protected function getQueryDeleteMySql()
     {
-        return $this->queryUpdate;
+        return $this->queryDeleteMySql;
     }
 
-    protected function getQueryDelete()
+
+    protected function getQuerySelectPgSql()
     {
-        return $this->queryDelete;
+        return $this->querySelectPgSql;
     }
+
+    protected function getQueryInsertPgSql()
+    {
+        return $this->queryInsertPgSql;
+    }
+
+    protected function getQueryUpdatePgSql()
+    {
+        return $this->queryUpdatePgSql;
+    }
+
+    protected function getQueryDeletePgSql()
+    {
+        return $this->queryDeletePgSql;
+    }
+
 
     public function select()
     {
-        $str = "";
-//        foreach ($this->fields as $key => $value) {
-//            $next = array_key_exists($key + 1, $this->fields);
-//            /*if(next($this->fields)){
-//                $str += $value.", ";
-//                echo $str;
-//            } else {
-//                $str += $value;
-//                echo $str;
-//            }*/
-//            //echo $next;
-//            if ($next) {
-//                $str .= $value . ", ";
-//            } else {
-//                $str .= $value;
-//                //echo $str;
-//            }
-//
-//        }
-        //print_r($this->fields);
-        $str = implode("`, `",$this->fields);
-        //echo $str;
-        $this->querySelect = "SELECT `" . $str . "` FROM `" . $this->table . "` WHERE " . $this->whereField . "='" . $this->whereVal . "'";
-        //echo $this->querySelect."+";
-        //return $this->querySelect;
+        $strMySql = "";
+        $strPgSql = "";
+        print_r($this->fields);
+        $strMySql = implode("`, `",$this->fields);
+        $strPgSql = implode(", ",$this->fields);
+        $this->querySelectMySql = "SELECT `" . $strMySql . "` FROM `" . $this->table . "` WHERE " . $this->whereField . "='" . $this->whereVal . "'";
+        $this->querySelectPgSql = "SELECT " . $strPgSql . " FROM " . $this->table . " WHERE " . $this->whereField . " = '" . $this->whereVal . "';";
     }
 
     function insert()
     {
-        $str_fields = "";
-        $str_name = "";
-        /*foreach ($this->fields as $key => $value) {
-            $next = array_key_exists($key + 1, $this->fields);
-            if ($next) {
-                $str_fields .= $value . ", ";
-            } else {
-                $str_fields .= $value;
-            }
-        }*/
-        $str_fields = implode("`, `",$this->fields);
-        /*foreach ($this->values as $key => $value) {
-            $next = array_key_exists($key + 1, $this->values);
-            if ($next) {
-                $str_name .= $value . ", ";
-            } else {
-                $str_name .= $value;
-            }
-
-        }*/
-        $str_name = implode("', '",$this->values);
-        $this->queryInsert = "INSERT"." INTO `" . $this->table . "`( `" . $str_fields . "`) " . "VALUES ('". $str_name . "')";
-        return $this->queryInsert;
+        $strFieldsMySql = implode("`, `",$this->fields);
+        $strNameMySql = implode("', '",$this->values);
+        $strFieldsPgSql = implode(", ",$this->fields);
+        $strNamePgSql = implode("', '",$this->values);
+        $this->queryInsertMySql = "INSERT"." INTO `" . $this->table . "`( `" . $strFieldsMySql . "`) " . "VALUES ('". $strNameMySql . "')";
+        $this->queryInsertPgSql = "INSERT"." INTO " . $this->table . "( id," . $strFieldsPgSql . ") " . "VALUES ('4','". $strNamePgSql . "');";
+        
     }
 
     function update()
     {
-        $str_fields = "";
-        $str_name = "";
-        /*foreach ($this->fields as $key => $value) {
-            $next = array_key_exists($key + 1, $this->fields);
-            if ($next) {
-                $str_fields .= $value . ", ";
-            } else {
-                $str_fields .= $value;
-            }
-        }
-        foreach ($this->values as $key => $value) {
-            $next = array_key_exists($key + 1, $this->values);
-            if ($next) {
-                $str_name .= $value . ", ";
-            } else {
-                $str_name .= $value;
-            }
-
-        }*/
-        $str_fields = implode("`, `",$this->fields);
-        $str_name = implode("', '",$this->values);
-        $this->queryUpdate = "UPDATE `" . $this->table . "` SET `" . $str_fields . "` = '" . $str_name . "' WHERE " . $this->whereField . "='" . $this->whereVal . "'";
-        return $this->queryUpdate;
+        $strFieldsMySql = "";
+        $strName = "";
+        $strFieldsPgSql = "";
+        $strFieldsMySql = implode("`, `", $this->fields);
+        $strName = implode("', '", $this->values);
+        $strFieldsPgSql = implode(", ", $this->fields);
+        $this->queryUpdateMySql = "UPDATE `" . $this->table . "` SET `" . $strFieldsMySql . "` = '" . $strName . "' WHERE " . $this->whereField . "='" . $this->whereVal . "'";
+        $this->queryUpdatePgSql = "UPDATE " . $this->table . " SET " . $strFieldsPgSql . " = '" . $strName . "' WHERE " . $this->whereField . "='" . $this->whereVal . "';";
+        
     }
 
     function delete()
     {
-        $this->queryDelete = "DELETE"." FROM `" . $this->table . "` WHERE " . $this->whereField . "='" . $this->getWhereVal() . "'";
-        return $this->queryDelete;
+        $this->queryDeleteMySql = "DELETE"." FROM `" . $this->table . "` WHERE " . $this->whereField . "='" . $this->getWhereVal() . "'";
+        $this->queryDeletePgSql = "DELETE"." FROM " . $this->table . " WHERE " . $this->whereField . "='" . $this->getWhereVal() . "';";
+        
     }
 
 

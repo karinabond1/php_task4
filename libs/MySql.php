@@ -1,6 +1,6 @@
 <?php
 include_once 'Sql.php';
-include_once 'E:/PHP/OSPanel/domains/GFL/php_task1/php_task4/config.php';
+include_once '/home/user14/public_html/PHP/php_task4/php_task4/config.php';
 
 class MySql extends Sql
 {
@@ -12,14 +12,17 @@ class MySql extends Sql
         parent::__construct();
 
         $this->connection = "";
-        //$this->obj=$obj;
     }
 
     public function connect()
     {
         $this->connection = mysql_connect(HOST, USER_NAME, USER_PASS);
-        if (!$this->connection) die ("Can not connect to MySQL");
+        if (!$this->connection) {
+            return "Can not connect to PgSql";
+        }else{
         mysql_select_db(DATABASE);
+     }
+        
     }
 
     public function setObj(Sql $obj){
@@ -28,9 +31,7 @@ class MySql extends Sql
 
     public function selectMySql()
     {
-        parent::select();
-        //echo "value : ".$this->obj->getQuerySelect();
-        $q = mysql_query($this->obj->getQuerySelect());
+        $q = mysql_query($this->obj->getQuerySelectMySql());
         $result = array();
         $index = 0;
         while ($row = mysql_fetch_assoc($q)) {
@@ -42,10 +43,7 @@ class MySql extends Sql
 
     function update()
     {
-        parent::update();
-        //echo "value : ".$this->obj->getQueryUpdate();
-        //$query = $this->obj->getQueryUpdate();
-        $result = mysql_query($this->obj->getQueryUpdate());
+        $result = mysql_query($this->obj->getQueryUpdateMySql());
         if ($result) {
             return "The field is updated";
         } else {
@@ -55,9 +53,7 @@ class MySql extends Sql
 
     function insert()
     {
-        parent::insert();
-        //echo "value : ".$this->obj->getQueryInsert();
-        $query =$this->obj->getQueryInsert();
+        $query =$this->obj->getQueryInsertMySql();
         $result = mysql_query($query);
         if ($result) {
             return "The field is added";
@@ -68,10 +64,7 @@ class MySql extends Sql
 
     function delete()
     {
-        parent::delete();
-        echo "value : ".$this->obj->getQueryDelete();
-       // $query = $this->getQueryDelete();
-        $result = mysql_query($this->obj->getQueryDelete());
+        $result = mysql_query($this->obj->getQueryDeleteMySql());
         if ($result) {
             return "The field is deleted";
         } else {

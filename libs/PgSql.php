@@ -1,5 +1,7 @@
 <?php
 include_once 'Sql.php';
+include_once '/home/user14/public_html/PHP/php_task4/php_task4/config.php';
+
 class PgSql extends Sql
 {
     protected $connection;
@@ -12,10 +14,10 @@ class PgSql extends Sql
 
     function connect()
     {
-        $this->connection = "host=" . HOST . " dbname=" . DATABASE . " user=" . USER_NAME . " password=" . USER_PASS;
-        $connect = pg_connect($this->obj->connection);
+        $this->connection = "host=" . HOST . " dbname=" . DATABASE . " user=" . USER_NAME . " password=" . USER_PASS."";
+        $connect = pg_connect($this->connection);
         if (!$connect) {
-            return "Can not connect to MySQL";
+            return "Can not connect to PgSql";
         }
     }
 
@@ -25,21 +27,24 @@ class PgSql extends Sql
 
     function select()
     {
-        parent::select();
-        $q = pg_query($this->obj->getQuerySelect());
-        $result = array();
-        $index = 0;
-        while ($row = mysql_fetch_assoc($q)) {
-            $result[$index] = $row;
-            $index++;
+        $query = $this->obj->getQuerySelectPgSql();
+        $q = pg_query($query);
+        if($q){
+            $result = array();
+            $index = 0;
+            while ($row = pg_fetch_row($q)) {
+                $result[$index] = $row;
+                $index++;
+            }
+            return $result;
+        }else {
+            return "Bad";
         }
-        return $result;
     }
 
     function update()
     {
-        parent::update();
-        $query = $this->obj->getQueryUpdate();
+        $query = $this->obj->getQueryUpdatePgSql();
         $result = pg_query($query);
         if ($result) {
             return "The field is updated";
@@ -50,8 +55,7 @@ class PgSql extends Sql
 
     function insert()
     {
-        parent::insert();
-        $query = $this->obj->getQueryInsert();
+        $query = $this->obj->getQueryInsertPgSql();
         $result = pg_query($query);
         if ($result) {
             return "The field is added";
@@ -62,8 +66,7 @@ class PgSql extends Sql
 
     function delete()
     {
-        parent::delete();
-        $query = $this->obj->getQueryDelete();
+        $query = $this->obj->getQueryDeletePgSql();
         $result = pg_query($query);
         if ($result) {
             return "The field is deleted";
@@ -74,7 +77,7 @@ class PgSql extends Sql
 
     function __destruct()
     {
-        pg_close($this->obj->connection);
+        pg_close();
     }
 }
 

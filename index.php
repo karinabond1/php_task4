@@ -16,7 +16,7 @@ $where_val = $sql->setWhereVal("Derek");
 $sql->select();
 $mySql = new MySql();
 $mySql->setObj($sql);
-$mySql->connect();
+$mysql_conn = $mySql->connect();
 $arr_select = $mySql->selectMySql();
 $pgSql = new PgSql();
 $pgSql->setObj($sql);
@@ -50,11 +50,6 @@ $res_delete = $mySql->delete();
 $pg_res_delete = $pgSql->delete();
 
 
-
-
-
-/*$getFil = $sql->getValues();
-print_r($getFil);*/
 
 
 include 'templates/index.php';
